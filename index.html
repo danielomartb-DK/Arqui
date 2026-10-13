@@ -117,7 +117,7 @@
             <div class="hero__slogan-badge">
               <span class="hero__slogan-spark">⚡</span>
               <span class="hero__slogan-quote">“Amen arquitectura”</span>
-              <span class="hero__slogan-tag">Mantra Oficial</span>
+              <span class="hero__slogan-tag">Slogan Oficial</span>
             </div>
             <div class="hero__lab-tag">Laboratorio de Arquitectura x86</div>
           </div>
@@ -1173,15 +1173,36 @@
     <p style="color:var(--color-text-muted);font-size:var(--text-sm);margin-bottom:1.5rem">
       Sigue este recorrido para conocer las funcionalidades principales de la aplicación.
     </p>
-    <ol style="font-size:var(--text-sm);color:var(--color-text-muted);line-height:2.2;padding-left:1.2rem">
-      <li>Ir a <strong>Modo Real</strong> y calcular la dirección para el ejemplo <code>1000h:0020h</code>.</li>
-      <li>Activar <strong>Paso a paso</strong> para ver cada operación explicada.</li>
-      <li>Ir a <strong>Modo Protegido → Modo Tabla</strong> y cargar la GDT de ejemplo.</li>
-      <li>Resolver el selector <code>0008h</code> con DS y un offset para obtener la dirección lineal.</li>
-      <li>Ir a <strong>Reversing</strong>, cargar un descriptor de ejemplo y explorar sus campos.</li>
-      <li>Ir a <strong>Laboratorio</strong>, seleccionar <em>Modo Real</em> y responder el ejercicio.</li>
-      <li>Ir a <strong>Pruebas</strong> y ejecutar la suite para verificar los cálculos.</li>
-    </ol>
+    <div class="tour-steps">
+      <div class="tour-step-item">
+        <div class="tour-step-num">1</div>
+        <div class="tour-step-text">Ir a <strong>Modo Real</strong> y calcular la dirección para el ejemplo <code>1000h:0020h</code>.</div>
+      </div>
+      <div class="tour-step-item">
+        <div class="tour-step-num">2</div>
+        <div class="tour-step-text">Activar <strong>Paso a paso</strong> para ver cada operación explicada con diagrama en tiempo real.</div>
+      </div>
+      <div class="tour-step-item">
+        <div class="tour-step-num">3</div>
+        <div class="tour-step-text">Ir a <strong>Modo Protegido → Modo Tabla</strong> y cargar la GDT de ejemplo.</div>
+      </div>
+      <div class="tour-step-item">
+        <div class="tour-step-num">4</div>
+        <div class="tour-step-text">Resolver el selector <code>0008h</code> con registro DS y un offset para obtener la dirección lineal.</div>
+      </div>
+      <div class="tour-step-item">
+        <div class="tour-step-num">5</div>
+        <div class="tour-step-text">Ir a <strong>Reversing</strong>, cargar un descriptor de ejemplo y explorar sus 64 bits campo por campo.</div>
+      </div>
+      <div class="tour-step-item">
+        <div class="tour-step-num">6</div>
+        <div class="tour-step-text">Ir a <strong>Laboratorio</strong>, seleccionar una categoría y responder los ejercicios generados.</div>
+      </div>
+      <div class="tour-step-item">
+        <div class="tour-step-num">7</div>
+        <div class="tour-step-text">Ir a <strong>Pruebas</strong> y ejecutar la suite para verificar los cálculos matemáticos del simulador.</div>
+      </div>
+    </div>
     <div style="margin-top:1.5rem;display:flex;justify-content:flex-end">
       <button class="btn btn--primary" id="btnTourStart" data-page="real">Comenzar por Modo Real →</button>
     </div>

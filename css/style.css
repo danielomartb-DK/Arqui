@@ -1035,7 +1035,7 @@ a:hover {
 
 .result-row {
   display: grid;
-  grid-template-columns: 220px 1fr;
+  grid-template-columns: minmax(130px, 190px) 1fr;
   gap: var(--sp-2) var(--sp-4);
   padding: var(--sp-3) 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
@@ -1054,9 +1054,14 @@ a:hover {
 
 .result-row__value {
   font-family: var(--font-mono);
-  font-size: var(--text-md);
+  font-size: var(--text-sm);
   color: var(--color-cyan);
-  word-break: break-all;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+#selDecoPanel .result-row {
+  grid-template-columns: 130px 1fr;
 }
 
 .result-row__value--large {
@@ -2127,7 +2132,7 @@ a:hover {
 
 .grid-2col-wide {
   display: grid;
-  grid-template-columns: 1fr 1.4fr;
+  grid-template-columns: 1.35fr 1fr;
   gap: var(--sp-6);
 }
 
@@ -2233,6 +2238,7 @@ a:hover {
   font-family: var(--font-mono);
   font-size: 0.82rem;
   vertical-align: middle;
+  white-space: nowrap;
 }
 
 .desc-table tbody td:first-child {
@@ -2265,6 +2271,60 @@ a:hover {
   opacity: 0.7;
 }
 
+.exercise-card__category {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 0.25rem 0.85rem;
+  border-radius: var(--radius-full);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: var(--sp-4);
+  background: rgba(59, 130, 246, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  color: var(--color-cyan);
+  box-shadow: 0 0 12px rgba(34, 211, 238, 0.12);
+}
+
+.exercise-card__category--real {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.4);
+  color: var(--color-cyan);
+}
+
+.exercise-card__category--selector {
+  background: rgba(139, 92, 246, 0.15);
+  border-color: rgba(139, 92, 246, 0.4);
+  color: var(--color-violet-lit);
+}
+
+.exercise-card__category--lineal {
+  background: rgba(34, 211, 238, 0.15);
+  border-color: rgba(34, 211, 238, 0.4);
+  color: var(--color-cyan);
+}
+
+.exercise-card__category--descriptor {
+  background: rgba(52, 211, 153, 0.15);
+  border-color: rgba(52, 211, 153, 0.4);
+  color: var(--color-success);
+}
+
+.exercise-card__category--error {
+  background: rgba(251, 113, 133, 0.15);
+  border-color: rgba(251, 113, 133, 0.4);
+  color: var(--color-error);
+}
+
+.exercise-card__category--reversing {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: rgba(245, 158, 11, 0.4);
+  color: var(--color-warn);
+}
+
 .exercise-card__question {
   font-size: var(--text-lg);
   font-weight: 600;
@@ -2272,6 +2332,18 @@ a:hover {
   margin-bottom: var(--sp-6);
   line-height: 1.6;
   letter-spacing: -0.01em;
+}
+
+.exercise-card__question span.hl,
+.exercise-card__question code {
+  font-family: var(--font-mono);
+  background: rgba(34, 211, 238, 0.12);
+  color: var(--color-cyan);
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(34, 211, 238, 0.25);
+  font-size: 0.95em;
+  font-weight: 600;
 }
 
 .exercise-card__data {
@@ -2286,15 +2358,20 @@ a:hover {
   line-height: 1.8;
 }
 
+.exercise-card__answer,
 .exercise-card__input-group {
   display: flex;
   gap: var(--sp-3);
-  align-items: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: var(--sp-4);
   margin-bottom: var(--sp-4);
 }
 
+.exercise-card__answer .form-input,
 .exercise-card__input-group .form-input {
   flex: 1;
+  min-width: 220px;
 }
 
 .exercise-card__feedback {
@@ -2862,4 +2939,117 @@ textarea:focus-visible,
     transition-duration: 0.001ms !important;
   }
 }
+
+/* ============================================================
+   46. BADGES TECNOLÓGICOS GLOBALES
+   ============================================================ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.18rem 0.55rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--color-surface-3);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+
+.badge--cyan {
+  background: rgba(34, 211, 238, 0.12);
+  color: var(--color-cyan);
+  border-color: rgba(34, 211, 238, 0.3);
+}
+
+.badge--violet {
+  background: rgba(139, 92, 246, 0.12);
+  color: var(--color-violet-lit);
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+.badge--green {
+  background: rgba(52, 211, 153, 0.12);
+  color: var(--color-success);
+  border-color: rgba(52, 211, 153, 0.3);
+}
+
+.badge--amber {
+  background: rgba(245, 158, 11, 0.12);
+  color: var(--color-warn);
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.badge--red {
+  background: rgba(251, 113, 133, 0.12);
+  color: var(--color-error);
+  border-color: rgba(251, 113, 133, 0.3);
+}
+
+/* ============================================================
+   47. RECORRIDO GUIADO — TOUR STEP LIST
+   ============================================================ */
+.tour-steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  margin: var(--sp-4) 0 var(--sp-6) 0;
+}
+
+.tour-step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  background: rgba(17, 27, 45, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.tour-step-item:hover {
+  background: rgba(22, 36, 58, 0.9);
+  border-color: rgba(59, 130, 246, 0.3);
+  transform: translateX(4px);
+}
+
+.tour-step-num {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-full);
+  background: rgba(34, 211, 238, 0.15);
+  border: 1px solid rgba(34, 211, 238, 0.35);
+  color: var(--color-cyan);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.tour-step-text {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.tour-step-text strong {
+  color: var(--color-text);
+}
+
+.tour-step-text code {
+  font-family: var(--font-mono);
+  background: rgba(34, 211, 238, 0.1);
+  color: var(--color-cyan);
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.85em;
+}
+
 

@@ -930,16 +930,24 @@ function parseInput(inputEl, errEl, format) {
     }
     gdtTableBody.innerHTML = gdtTableData.map((entry, i) => {
       const hex  = Utils.bigIntToHex(entry.raw64, 16);
+      const isSys  = entry.desc?.isSystem;
+      const isCode = entry.desc?.isCode;
       const tipo = entry.desc
-        ? (entry.desc.isSystem ? 'Sistema' : entry.desc.isCode ? 'Código' : 'Datos')
+        ? (isSys ? 'Sistema' : isCode ? 'Código' : 'Datos')
         : '—';
-      const pres = entry.desc?.isPresent ? '✓' : '✗';
+      const tipoBadgeClass = isSys ? 'badge--violet' : isCode ? 'badge--cyan' : 'badge--green';
+      const isPres = entry.desc?.isPresent;
+      const presIcon  = isPres ? '✓' : '✗';
+      const presColor = isPres ? 'var(--color-success)' : 'var(--color-error)';
       return `<tr data-gdt-idx="${i}">
-        <td>${i}</td>
-        <td style="font-size:0.78rem">${hex}</td>
-        <td>${tipo} ${pres}</td>
+        <td><strong>#${i}</strong></td>
+        <td style="font-size:0.78rem;font-family:var(--font-mono);color:var(--color-cyan)">${hex}</td>
         <td>
-          <button class="btn btn--danger btn--sm btn--icon" onclick="removeGdtEntry(${i})" title="Eliminar" aria-label="Eliminar entrada ${i}">✕</button>
+          <span class="badge ${tipoBadgeClass}">${tipo}</span>
+          <span style="color:${presColor};font-weight:700;margin-left:6px" title="${isPres ? 'Presente' : 'No presente'}">${presIcon}</span>
+        </td>
+        <td>
+          <button class="btn btn--danger btn--sm btn--icon" onclick="removeGdtEntry(${i})" title="Eliminar entrada ${i}" aria-label="Eliminar entrada ${i}">✕</button>
         </td>
       </tr>`;
     }).join('');
