@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0B1220"/>
+      <stop offset="100%" stop-color="#050811"/>
+    </linearGradient>
+    <linearGradient id="chip" x1="12" y1="12" x2="52" y2="52" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1E314D"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#22D3EE"/>
+      <stop offset="100%" stop-color="#3B82F6"/>
+    </linearGradient>
+    <filter id="neon" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="1" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Outer squircle / background -->
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="url(#bg)" stroke="url(#glow)" stroke-width="2"/>
+  
+  <!-- Microchip pins (top & bottom) -->
+  <g fill="#22D3EE" opacity="0.85">
+    <rect x="20" y="5" width="3" height="5" rx="1"/>
+    <rect x="27" y="5" width="3" height="5" rx="1"/>
+    <rect x="34" y="5" width="3" height="5" rx="1"/>
+    <rect x="41" y="5" width="3" height="5" rx="1"/>
+    
+    <rect x="20" y="54" width="3" height="5" rx="1"/>
+    <rect x="27" y="54" width="3" height="5" rx="1"/>
+    <rect x="34" y="54" width="3" height="5" rx="1"/>
+    <rect x="41" y="54" width="3" height="5" rx="1"/>
+    
+    <!-- Left & right pins -->
+    <rect x="5" y="20" width="5" height="3" rx="1"/>
+    <rect x="5" y="27" width="5" height="3" rx="1"/>
+    <rect x="5" y="34" width="5" height="3" rx="1"/>
+    <rect x="5" y="41" width="5" height="3" rx="1"/>
+    
+    <rect x="54" y="20" width="5" height="3" rx="1"/>
+    <rect x="54" y="27" width="5" height="3" rx="1"/>
+    <rect x="54" y="34" width="5" height="3" rx="1"/>
+    <rect x="54" y="41" width="5" height="3" rx="1"/>
+  </g>
+  
+  <!-- Main Processor Die -->
+  <rect x="12" y="12" width="40" height="40" rx="7" fill="url(#chip)" stroke="#3B82F6" stroke-width="1.5"/>
+  
+  <!-- Inner Circuit & Core -->
+  <rect x="16" y="16" width="32" height="32" rx="4" fill="#070C16" stroke="#22D3EE" stroke-width="1" stroke-dasharray="3 1.5"/>
+  
+  <!-- Text x86 -->
+  <text x="32" y="37" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'JetBrains Mono', monospace" font-weight="900" font-size="14" fill="#22D3EE" text-anchor="middle" letter-spacing="-0.5" filter="url(#neon)">x86</text>
+  
+  <!-- Status LED in corner -->
+  <circle cx="20.5" cy="20.5" r="1.8" fill="#34D399" filter="url(#neon)"/>
+</svg>
