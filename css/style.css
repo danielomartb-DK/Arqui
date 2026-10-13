@@ -255,7 +255,7 @@ a:hover {
 /* Slogan "Amen arquitectura" */
 .sidebar__logo-slogan {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.14em;
@@ -264,12 +264,17 @@ a:hover {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  text-shadow: 0 0 12px rgba(34, 211, 238, 0.4);
 }
 
-.sidebar__logo-slogan::before {
-  content: '▸';
+.slogan-bullet {
   color: var(--color-primary-lit);
   font-size: 0.8rem;
+  text-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
+}
+
+.slogan-text {
+  color: var(--color-cyan);
 }
 
 .sidebar__logo-sub {
@@ -583,7 +588,7 @@ a:hover {
   background: linear-gradient(180deg, rgba(17, 27, 45, 0.85) 0%, rgba(14, 22, 38, 0.85) 100%);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-xl);
-  padding: var(--sp-6);
+  padding: var(--sp-8);
   position: relative;
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
   box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.05);
@@ -604,8 +609,8 @@ a:hover {
 .card__header {
   display: flex;
   align-items: center;
-  gap: var(--sp-3);
-  margin-bottom: var(--sp-5);
+  gap: var(--sp-4);
+  margin-bottom: var(--sp-6);
   padding-bottom: var(--sp-4);
   border-bottom: 1px solid rgba(255, 255, 255, 0.07);
 }
@@ -1129,11 +1134,11 @@ a:hover {
   display: none;
   align-items: flex-start;
   gap: var(--sp-3);
-  padding: var(--sp-4);
+  padding: var(--sp-4) var(--sp-5);
   border-radius: var(--radius-md);
   font-size: var(--text-sm);
   margin: var(--sp-4) 0;
-  line-height: 1.5;
+  line-height: 1.6;
   box-shadow: var(--shadow-sm);
 }
 
@@ -1161,6 +1166,21 @@ a:hover {
   border: 1px solid rgba(245, 158, 11, 0.35);
   color: var(--color-warn);
   box-shadow: 0 0 16px rgba(245, 158, 11, 0.15);
+}
+
+/* Aviso informativo fijo (como en Modo Protegido Manual) */
+.status-msg--info-fixed {
+  display: flex !important;
+  background: rgba(37, 99, 235, 0.07);
+  border: 1px solid rgba(37, 99, 235, 0.25);
+  color: var(--color-text-muted);
+  box-shadow: 0 0 14px rgba(37, 99, 235, 0.1);
+  border-radius: var(--radius-md);
+  padding: var(--sp-4) var(--sp-5);
+  margin-top: var(--sp-4);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  gap: var(--sp-3);
 }
 
 .status-msg--info {
@@ -1408,6 +1428,73 @@ a:hover {
   height: 260px;
   background: radial-gradient(circle, rgba(34, 211, 238, 0.12) 0%, transparent 70%);
   pointer-events: none;
+}
+
+/* ── Hero Slogan Container ── */
+.hero__slogan-container {
+  margin-bottom: var(--sp-5);
+}
+
+.hero__slogan-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  background: linear-gradient(135deg, rgba(34, 211, 238, 0.12) 0%, rgba(59, 130, 246, 0.1) 100%);
+  border: 1px solid rgba(34, 211, 238, 0.4);
+  border-radius: var(--radius-full);
+  padding: var(--sp-2) var(--sp-5);
+  margin-bottom: var(--sp-3);
+  box-shadow: 0 0 20px rgba(34, 211, 238, 0.2), inset 0 0 12px rgba(34, 211, 238, 0.05);
+  animation: sloganPulse 4s ease-in-out infinite;
+}
+
+@keyframes sloganPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(34, 211, 238, 0.2), inset 0 0 12px rgba(34, 211, 238, 0.05); }
+  50% { box-shadow: 0 0 30px rgba(34, 211, 238, 0.35), inset 0 0 16px rgba(34, 211, 238, 0.08); }
+}
+
+.hero__slogan-spark {
+  font-size: 0.9rem;
+  filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.8));
+  animation: sparkFlicker 2.5s ease-in-out infinite;
+}
+
+@keyframes sparkFlicker {
+  0%, 100% { opacity: 1; }
+  40% { opacity: 0.6; }
+  60% { opacity: 0.9; }
+}
+
+.hero__slogan-quote {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #FFFFFF;
+  text-shadow: 0 0 14px rgba(34, 211, 238, 0.5);
+}
+
+.hero__slogan-tag {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--color-cyan);
+  background: rgba(34, 211, 238, 0.12);
+  border: 1px solid rgba(34, 211, 238, 0.25);
+  border-radius: var(--radius-sm);
+  padding: 1px 6px;
+  text-transform: uppercase;
+}
+
+.hero__lab-tag {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
 }
 
 .hero__content {

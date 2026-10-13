@@ -20,7 +20,10 @@
       <div class="sidebar__logo-mark">ARQ<span>LAB</span></div>
       <span class="sidebar__version-tag">x86</span>
     </div>
-    <div class="sidebar__logo-slogan">Amen arquitectura</div>
+    <div class="sidebar__logo-slogan">
+      <span class="slogan-bullet">▸</span>
+      <span class="slogan-text">Amen arquitectura</span>
+    </div>
     <div class="sidebar__logo-sub">Simulador · Modo Real &amp; Protegido</div>
     <div class="sidebar__status-badge">
       <span class="status-dot"></span>
@@ -110,11 +113,13 @@
       <!-- Hero -->
       <div class="hero">
         <div class="hero__content">
-          <div class="hero__eyebrow">
-            <span class="hero__eyebrow-icon">⚡</span>
-            <span class="hero__eyebrow-slogan">Amen arquitectura</span>
-            <span class="hero__eyebrow-sep">/</span>
-            <span>Laboratorio de Arquitectura x86</span>
+          <div class="hero__slogan-container">
+            <div class="hero__slogan-badge">
+              <span class="hero__slogan-spark">⚡</span>
+              <span class="hero__slogan-quote">“Amen arquitectura”</span>
+              <span class="hero__slogan-tag">Mantra Oficial</span>
+            </div>
+            <div class="hero__lab-tag">Laboratorio de Arquitectura x86</div>
           </div>
           <h1 class="hero__title" id="home-title">
             <span class="hero__title-accent">ARQ LAB</span><br>
@@ -484,13 +489,14 @@
           <div class="result-panel__body" id="protResultBody"></div>
         </div>
 
-        <!-- Advertencia manual -->
-        <div class="status-msg status-msg--warn status-msg--visible mt-4" style="opacity:0.8">
-          <span class="status-msg__icon">⚠</span>
+        <!-- Advertencia informativa del modo manual -->
+        <div class="status-msg status-msg--info-fixed mt-4">
+          <span class="status-msg__icon">ℹ️</span>
           <div class="status-msg__body">
-            En <strong>Modo Manual</strong>, la aplicación no puede confirmar que el selector apunte realmente
-            a este descriptor sin conocer la tabla de descriptores. Ambos se analizan de forma independiente.
-            Usa el <strong>Modo Tabla</strong> para verificar la correspondencia.
+            <strong style="color:var(--color-cyan)">Nota — Modo Manual:</strong>
+            La aplicación analiza el selector y el descriptor de forma <em>independiente</em>.
+            Sin conocer la tabla de descriptores no puede confirmar que el selector apunte realmente a este descriptor.
+            Usa el <strong>Modo Tabla</strong> para verificar la correspondencia exacta.
           </div>
         </div>
 
