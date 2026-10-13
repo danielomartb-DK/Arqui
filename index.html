@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ARQ LAB — Simulador x86 de Direccionamiento</title>
+  <meta name="description" content="Simulador educativo interactivo de direccionamiento x86 en Modo Real y Modo Protegido. Incluye reversing de descriptores, ejercicios prácticos y pruebas automatizadas." />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════════
+     SIDEBAR DE NAVEGACIÓN
+══════════════════════════════════════════════════════════════ -->
+<div class="sidebar-overlay" id="sidebarOverlay" role="presentation"></div>
+
+<nav class="sidebar" id="sidebar" aria-label="Navegación principal">
+  <div class="sidebar__logo">
+    <div class="sidebar__logo-top">
+      <div class="sidebar__logo-mark">ARQ<span>LAB</span></div>
+      <span class="sidebar__version-tag">x86</span>
+    </div>
+    <div class="sidebar__logo-slogan">Amen arquitectura</div>
+    <div class="sidebar__logo-sub">Simulador · Modo Real &amp; Protegido</div>
+    <div class="sidebar__status-badge">
+      <span class="status-dot"></span>
+      <span class="status-text">LAB ONLINE · READY</span>
+    </div>
+  </div>
+
+  <div class="sidebar__nav">
+    <div class="sidebar__section-label">Principal</div>
+
+    <button class="nav-item nav-item--active" data-page="home" id="nav-home" aria-current="page">
+      <span class="nav-item__icon">⌂</span>
+      <span class="nav-item__label">Inicio</span>
+    </button>
+
+    <div class="sidebar__section-label">Simuladores</div>
+
+    <button class="nav-item" data-page="real" id="nav-real">
+      <span class="nav-item__icon">🔢</span>
+      <span class="nav-item__label">Modo Real</span>
+    </button>
+
+    <button class="nav-item" data-page="protected" id="nav-protected">
+      <span class="nav-item__icon">🔒</span>
+      <span class="nav-item__label">Modo Protegido</span>
+    </button>
+
+    <button class="nav-item" data-page="reversing" id="nav-reversing">
+      <span class="nav-item__icon">🔬</span>
+      <span class="nav-item__label">Reversing</span>
+    </button>
+
+    <div class="sidebar__section-label">Aprender</div>
+
+    <button class="nav-item" data-page="exercises" id="nav-exercises">
+      <span class="nav-item__icon">✏️</span>
+      <span class="nav-item__label">Laboratorio</span>
+    </button>
+
+    <button class="nav-item" data-page="theory" id="nav-theory">
+      <span class="nav-item__icon">📚</span>
+      <span class="nav-item__label">Teoría y Glosario</span>
+    </button>
+
+    <div class="sidebar__section-label">Sistema</div>
+
+    <button class="nav-item" data-page="tests" id="nav-tests">
+      <span class="nav-item__icon">✅</span>
+      <span class="nav-item__label">Pruebas</span>
+    </button>
+
+    <button class="nav-item" data-page="about" id="nav-about">
+      <span class="nav-item__icon">ℹ️</span>
+      <span class="nav-item__label">Acerca de</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════════════
+     CONTENIDO PRINCIPAL
+══════════════════════════════════════════════════════════════ -->
+<div class="main">
+  <!-- Barra superior -->
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:1rem">
+      <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="sidebar">☰</button>
+      <div class="topbar__breadcrumb">
+        <span class="topbar__brand-text">ARQ LAB</span>
+        <span class="topbar__slogan-pill">Amen arquitectura</span>
+        <span class="topbar__breadcrumb-sep">›</span>
+        <span class="topbar__breadcrumb-current" id="breadcrumbCurrent">Inicio</span>
+      </div>
+    </div>
+    <div class="topbar__actions">
+      <button class="btn btn--ghost btn--sm" id="btnTour" title="Iniciar recorrido guiado">▶ Recorrido</button>
+    </div>
+  </header>
+
+  <!-- Área de contenido -->
+  <main class="content" id="mainContent">
+
+    <!-- ╔══════════════════════════════════════════════
+         ║  PÁGINA: INICIO
+         ╚══════════════════════════════════════════ -->
+    <section class="page page--active" id="page-home" aria-labelledby="home-title">
+
+      <!-- Hero -->
+      <div class="hero">
+        <div class="hero__content">
+          <div class="hero__eyebrow">
+            <span class="hero__eyebrow-icon">⚡</span>
+            <span class="hero__eyebrow-slogan">Amen arquitectura</span>
+            <span class="hero__eyebrow-sep">/</span>
+            <span>Laboratorio de Arquitectura x86</span>
+          </div>
+          <h1 class="hero__title" id="home-title">
+            <span class="hero__title-accent">ARQ LAB</span><br>
+            Comprende la memoria<br>desde los bits hasta la dirección
+          </h1>
+          <p class="hero__subtitle">
+            Simulador interactivo de direccionamiento x86 en Modo Real y Modo Protegido.
+            Calcula, visualiza, analiza descriptores y practica con ejercicios reales.
+          </p>
+          <div class="btn-group">
+            <button class="btn btn--primary btn--lg" data-page="real">🔢 Modo Real</button>
+            <button class="btn btn--cyan btn--lg" data-page="protected">🔒 Modo Protegido</button>
+          </div>
+        </div>
+        <div class="hero__visual">
+          <canvas id="heroCanvas" width="260" height="200" aria-label="Animación decorativa de registros x86"></canvas>
+        </div>
+      </div>
+
+      <!-- Tarjetas de módulos -->
+      <div class="dashboard-grid">
+
+        <div class="dashboard-card dashboard-card--blue" data-page="real" role="button" tabindex="0" aria-label="Ir al Modo Real">
+          <div class="dashboard-card__icon dashboard-card__icon--blue">🔢</div>
+          <div class="dashboard-card__title">Modo Real (8086)</div>
+          <div class="dashboard-card__desc">
+            Calcula direcciones físicas usando la fórmula clásica: Segmento × 16 + Offset.
+            Soporte para el modelo 8086 con desbordamiento de 20 bits y línea A20.
+          </div>
+          <div class="dashboard-card__badge">✦ Visualización paso a paso</div>
+        </div>
+
+        <div class="dashboard-card dashboard-card--cyan" data-page="protected" role="button" tabindex="0" aria-label="Ir al Modo Protegido">
+          <div class="dashboard-card__icon dashboard-card__icon--cyan">🔒</div>
+          <div class="dashboard-card__title">Modo Protegido (32 bits)</div>
+          <div class="dashboard-card__desc">
+            Interpreta selectores, descriptores GDT/LDT, calcula la dirección lineal
+            y valida permisos de acceso para DS, CS y SS.
+          </div>
+          <div class="dashboard-card__badge">✦ Tabla GDT/LDT editable</div>
+        </div>
+
+        <div class="dashboard-card dashboard-card--violet" data-page="reversing" role="button" tabindex="0" aria-label="Ir al Reversing de Descriptores">
+          <div class="dashboard-card__icon dashboard-card__icon--violet">🔬</div>
+          <div class="dashboard-card__title">Reversing de Descriptores</div>
+          <div class="dashboard-card__desc">
+            Introduce 64 bits en binario y descubre automáticamente cada campo
+            del descriptor: base, límite, tipo, privilegios y granularidad.
+          </div>
+          <div class="dashboard-card__badge">✦ Análisis bit a bit</div>
+        </div>
+
+        <div class="dashboard-card" data-page="exercises" role="button" tabindex="0" aria-label="Ir al Laboratorio">
+          <div class="dashboard-card__icon dashboard-card__icon--green">✏️</div>
+          <div class="dashboard-card__title">Laboratorio de Ejercicios</div>
+          <div class="dashboard-card__desc">
+            Practica con ejercicios generados automáticamente para modo real, selectores,
+            descriptores, dirección lineal e identificación de errores.
+          </div>
+          <div class="dashboard-card__badge">✦ 6 categorías · Respuesta verificada</div>
+        </div>
+
+        <div class="dashboard-card" data-page="theory" role="button" tabindex="0" aria-label="Ir a Teoría">
+          <div class="dashboard-card__icon" style="background:rgba(245,158,11,0.12);color:var(--color-warn);">📚</div>
+          <div class="dashboard-card__title">Teoría y Glosario</div>
+          <div class="dashboard-card__desc">
+            Fundamentos de la arquitectura x86, explicación de conceptos clave
+            y glosario completo de términos técnicos.
+          </div>
+          <div class="dashboard-card__badge">✦ Definiciones interactivas</div>
+        </div>
+
+        <div class="dashboard-card" data-page="tests" role="button" tabindex="0" aria-label="Ir a Pruebas">
+          <div class="dashboard-card__icon" style="background:rgba(16,185,129,0.12);color:var(--color-success);">✅</div>
+          <div class="dashboard-card__title">Pruebas Automatizadas</div>
+          <div class="dashboard-card__desc">
+            Ejecuta la suite de pruebas unitarias y visualiza los resultados de cada
+            caso de validación, cálculo y comprobación de límites.
+          </div>
+          <div class="dashboard-card__badge">✦ +30 casos de prueba</div>
+        </div>
+
+      </div>
+
+      <!-- Indicadores de estado -->
+      <div class="card mt-4">
+        <div class="card__header">
+          <div class="card__icon card__icon--green">✅</div>
+          <div>
+            <div class="card__title">Funcionalidades Disponibles</div>
+            <div class="card__subtitle">Todo funciona sin servidor ni conexión a Internet</div>
+          </div>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.75rem">
+          <span class="dashboard-card__badge" style="color:var(--color-success)">✓ Modo Real 8086</span>
+          <span class="dashboard-card__badge" style="color:var(--color-success)">✓ Línea A20</span>
+          <span class="dashboard-card__badge" style="color:var(--color-success)">✓ Selector GDT/LDT</span>
+          <span class="dashboard-card__badge" style="color:var(--color-success)">✓ Descriptores x86</span>
+          <span class="dashboard-card__badge" style="color:var(--color-success)">✓ DS / CS / SS</span>
+          <span class="dashboard-card__badge" style="color:var(--color-success)">✓ Reversing binario</span>
+          <span class="dashboard-card__badge" style="color:var(--color-success)">✓ Ejercicios dinámicos</span>
+          <span class="dashboard-card__badge" style="color:var(--color-success)">✓ Pruebas automatizadas</span>
+          <span class="dashboard-card__badge" style="color:var(--color-success)">✓ Modo pedagógico</span>
+          <span class="dashboard-card__badge" style="color:var(--color-cyan)">⧖ Paginación (simulación)</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ╔══════════════════════════════════════════════
+         ║  PÁGINA: MODO REAL
+         ╚══════════════════════════════════════════ -->
+    <section class="page" id="page-real" aria-labelledby="real-title">
+      <div class="section-header">
+        <div class="section-header__badge">🔢 Simulador</div>
+        <h2 class="section-header__title" id="real-title">Direccionamiento en Modo Real</h2>
+        <p class="section-header__desc">
+          Introduce un segmento y un desplazamiento para calcular la dirección física.
+          Fórmula: <code>Dirección física = Segmento × 10h + Offset</code>
+        </p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+
+        <!-- Panel de entrada -->
+        <div class="card">
+          <div class="card__header">
+            <div class="card__icon card__icon--blue">⌨</div>
+            <div>
+              <div class="card__title">Parámetros de entrada</div>
+              <div class="card__subtitle">Modelo 8086 clásico de 16 bits</div>
+            </div>
+          </div>
+
+          <!-- Selector de formato -->
+          <div class="form-group">
+            <label class="form-label" for="realFmt">Formato de entrada</label>
+            <select class="form-select" id="realFmt" aria-describedby="realFmtHelp">
+              <option value="hex">Hexadecimal (0–FFFFh)</option>
+              <option value="dec">Decimal (0–65535)</option>
+            </select>
+            <div class="form-help" id="realFmtHelp">Hex admite: 1000, 0x1000, 1000h</div>
+          </div>
+
+          <!-- Selector de modelo de memoria -->
+          <div class="form-group">
+            <label class="form-label" for="realModel">Modelo de memoria</label>
+            <select class="form-select" id="realModel">
+              <option value="8086">8086 clásico (20 bits, desbordamiento)</option>
+              <option value="a20">PC con A20 habilitada</option>
+            </select>
+          </div>
+
+          <!-- Segmento -->
+          <div class="form-group">
+            <label class="form-label form-label--required" for="realSeg">Segmento</label>
+            <input class="form-input" type="text" id="realSeg"
+              placeholder="p. ej. 1000h" autocomplete="off"
+              aria-required="true" aria-describedby="realSegErr" />
+            <div class="form-error" id="realSegErr" role="alert" aria-live="polite"></div>
+          </div>
+
+          <!-- Offset -->
+          <div class="form-group">
+            <label class="form-label form-label--required" for="realOff">Offset (desplazamiento)</label>
+            <input class="form-input" type="text" id="realOff"
+              placeholder="p. ej. 0020h" autocomplete="off"
+              aria-required="true" aria-describedby="realOffErr" />
+            <div class="form-error" id="realOffErr" role="alert" aria-live="polite"></div>
+          </div>
+
+          <!-- Acciones -->
+          <div class="btn-group">
+            <button class="btn btn--primary" id="btnRealCalc">⚡ Calcular</button>
+            <button class="btn btn--secondary" id="btnRealStep">▶ Paso a paso</button>
+            <button class="btn btn--ghost" id="btnRealClear">✕ Limpiar</button>
+          </div>
+
+          <!-- Ejemplos precargados -->
+          <hr class="divider" />
+          <div class="text-sm text-muted mb-4">Ejemplos precargados:</div>
+          <div class="btn-group" style="flex-wrap:wrap">
+            <button class="btn btn--ghost btn--sm" data-ex-seg="1000" data-ex-off="0020">1000h:0020h</button>
+            <button class="btn btn--ghost btn--sm" data-ex-seg="2000" data-ex-off="0010">2000h:0010h</button>
+            <button class="btn btn--ghost btn--sm" data-ex-seg="0000" data-ex-off="0000">0000h:0000h</button>
+            <button class="btn btn--ghost btn--sm" data-ex-seg="FFFF" data-ex-off="FFFF">FFFFh:FFFFh</button>
+          </div>
+        </div>
+
+        <!-- Panel de resultados -->
+        <div style="display:flex;flex-direction:column;gap:1.5rem">
+          <div class="result-panel" id="realResultPanel">
+            <div class="result-panel__header">
+              <span class="result-panel__title">Resultado</span>
+              <button class="btn btn--ghost btn--sm" id="btnRealCopy" style="display:none">📋 Copiar</button>
+            </div>
+            <div class="result-panel__body" id="realResultBody">
+              <p class="text-muted text-sm" style="text-align:center;padding:2rem">
+                Introduce los valores y pulsa <strong>Calcular</strong> para ver el resultado.
+              </p>
+            </div>
+          </div>
+
+          <!-- Mensaje de estado -->
+          <div class="status-msg" id="realStatusMsg" role="status" aria-live="polite">
+            <span class="status-msg__icon"></span>
+            <div class="status-msg__body"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Diagrama visual -->
+      <div class="card mt-6" id="realDiagramCard" style="display:none">
+        <div class="card__header">
+          <div class="card__icon card__icon--cyan">📊</div>
+          <div>
+            <div class="card__title">Visualización del cálculo</div>
+            <div class="card__subtitle">Representación del segmento, desplazamiento y dirección resultante</div>
+          </div>
+        </div>
+        <canvas id="realDiagramCanvas" height="220" aria-label="Diagrama de cálculo de dirección física"></canvas>
+      </div>
+
+      <!-- Stepper de modo aprendizaje -->
+      <div class="stepper mt-6" id="realStepper" style="display:none" aria-label="Modo aprendizaje paso a paso">
+        <div class="stepper__progress">
+          <div class="stepper__progress-bar" id="realStepBar" style="width:0%"></div>
+        </div>
+        <div class="stepper__header">
+          <span class="stepper__step-indicator" id="realStepNum">Paso 1 de —</span>
+          <span class="stepper__title" id="realStepTitle">—</span>
+        </div>
+        <div class="stepper__body">
+          <div class="stepper__content" id="realStepContent"></div>
+          <div class="stepper__value-display" id="realStepValue" style="display:none"></div>
+        </div>
+        <div class="stepper__controls">
+          <button class="btn btn--ghost btn--sm" id="btnStepRealPrev" disabled>‹ Anterior</button>
+          <button class="btn btn--ghost btn--sm" id="btnStepRealPlay">▶ Reproducir</button>
+          <button class="btn btn--ghost btn--sm" id="btnStepRealNext">Siguiente ›</button>
+          <button class="btn btn--ghost btn--sm" id="btnStepRealReset" style="margin-left:auto">↺ Reiniciar</button>
+          <button class="btn btn--ghost btn--sm" id="btnRealStepClose">✕</button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ╔══════════════════════════════════════════════
+         ║  PÁGINA: MODO PROTEGIDO
+         ╚══════════════════════════════════════════ -->
+    <section class="page" id="page-protected" aria-labelledby="prot-title">
+      <div class="section-header">
+        <div class="section-header__badge">🔒 Simulador</div>
+        <h2 class="section-header__title" id="prot-title">Direccionamiento en Modo Protegido</h2>
+        <p class="section-header__desc">
+          Interpreta selectores, accede a la GDT/LDT, decodifica descriptores y calcula la dirección lineal.
+          <code>Dirección lineal = Base del segmento + Offset</code>
+        </p>
+      </div>
+
+      <!-- Tabs: Manual / Tabla GDT -->
+      <div class="tabs" role="tablist">
+        <button class="tab-btn tab-btn--active" role="tab" data-tab="prot-manual" aria-selected="true" id="tab-prot-manual">Modo Manual</button>
+        <button class="tab-btn" role="tab" data-tab="prot-table" aria-selected="false" id="tab-prot-table">Modo Tabla GDT/LDT</button>
+        <button class="tab-btn" role="tab" data-tab="prot-paging" aria-selected="false" id="tab-prot-paging">Paginación (didáctico)</button>
+      </div>
+
+      <!-- ── TAB: MODO MANUAL ── -->
+      <div class="tab-panel tab-panel--active" id="tab-panel-prot-manual" role="tabpanel" aria-labelledby="tab-prot-manual">
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+
+          <!-- Selector -->
+          <div class="card">
+            <div class="card__header">
+              <div class="card__icon card__icon--blue">🔗</div>
+              <div><div class="card__title">Selector de Segmento</div></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="protFmt">Formato</label>
+              <select class="form-select" id="protFmt">
+                <option value="hex">Hexadecimal</option>
+                <option value="dec">Decimal</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label form-label--required" for="protSel">Selector (16 bits)</label>
+              <input class="form-input" type="text" id="protSel"
+                placeholder="p. ej. 0008h"
+                aria-required="true" aria-describedby="protSelErr" />
+              <div class="form-error" id="protSelErr" role="alert" aria-live="polite"></div>
+            </div>
+
+            <!-- Descomposición del selector (resultado inmediato) -->
+            <div class="result-panel" id="selDecoPanel" style="margin-top:1rem;display:none">
+              <div class="result-panel__header"><span class="result-panel__title">Campos del Selector</span></div>
+              <div class="result-panel__body" id="selDecoBody"></div>
+            </div>
+
+            <button class="btn btn--secondary btn--sm mt-2" id="btnDecodeSel">Decodificar selector</button>
+          </div>
+
+          <!-- Descriptor manual -->
+          <div class="card">
+            <div class="card__header">
+              <div class="card__icon card__icon--cyan">📄</div>
+              <div><div class="card__title">Descriptor (hex, 64 bits)</div></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label form-label--required" for="protDesc">
+                Descriptor hexadecimal (16 dígitos)
+              </label>
+              <input class="form-input" type="text" id="protDesc"
+                placeholder="p. ej. 00CF9A000000FFFF"
+                style="font-size:0.85rem"
+                aria-required="true" aria-describedby="protDescErr" />
+              <div class="form-error" id="protDescErr" role="alert" aria-live="polite"></div>
+              <div class="form-help">16 caracteres hexadecimales = 64 bits = 8 bytes</div>
+            </div>
+
+            <!-- Registro DS/CS/SS -->
+            <div class="form-group">
+              <label class="form-label">Registro de segmento destino</label>
+              <div class="reg-selector" role="group" aria-label="Selección de registro">
+                <button class="reg-btn reg-btn--active" data-reg="DS" id="regDS" aria-pressed="true">DS</button>
+                <button class="reg-btn" data-reg="CS" id="regCS" aria-pressed="false">CS</button>
+                <button class="reg-btn" data-reg="SS" id="regSS" aria-pressed="false">SS</button>
+              </div>
+            </div>
+
+            <!-- Offset -->
+            <div class="form-group">
+              <label class="form-label form-label--required" for="protOff">Offset (desplazamiento)</label>
+              <input class="form-input" type="text" id="protOff"
+                placeholder="p. ej. 00001000h"
+                aria-required="true" aria-describedby="protOffErr" />
+              <div class="form-error" id="protOffErr" role="alert" aria-live="polite"></div>
+            </div>
+
+            <div class="btn-group">
+              <button class="btn btn--primary" id="btnProtCalc">⚡ Calcular</button>
+              <button class="btn btn--ghost" id="btnProtClear">✕ Limpiar</button>
+            </div>
+
+            <!-- Ejemplos precargados -->
+            <hr class="divider" />
+            <div class="text-sm text-muted mb-4">Ejemplos precargados:</div>
+            <div class="btn-group" style="flex-wrap:wrap">
+              <button class="btn btn--ghost btn--sm" data-prot-sel="0008" data-prot-desc="00CF9A000000FFFF" data-prot-off="00001000" data-prot-reg="CS">Código 32b (0008h)</button>
+              <button class="btn btn--ghost btn--sm" data-prot-sel="0010" data-prot-desc="00CF92000000FFFF" data-prot-off="00002000" data-prot-reg="DS">Datos 32b (0010h)</button>
+              <button class="btn btn--ghost btn--sm" data-prot-sel="0000" data-prot-desc="0000000000000000" data-prot-off="00000000" data-prot-reg="DS">Selector Nulo (0000h)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resultado modo protegido -->
+        <div class="status-msg mt-4" id="protStatusMsg" role="status" aria-live="polite">
+          <span class="status-msg__icon"></span>
+          <div class="status-msg__body"></div>
+        </div>
+
+        <div class="result-panel mt-4" id="protResultPanel" style="display:none">
+          <div class="result-panel__header">
+            <span class="result-panel__title">Resultado del Modo Protegido</span>
+            <button class="btn btn--ghost btn--sm" id="btnProtCopy">📋 Copiar</button>
+          </div>
+          <div class="result-panel__body" id="protResultBody"></div>
+        </div>
+
+        <!-- Advertencia manual -->
+        <div class="status-msg status-msg--warn status-msg--visible mt-4" style="opacity:0.8">
+          <span class="status-msg__icon">⚠</span>
+          <div class="status-msg__body">
+            En <strong>Modo Manual</strong>, la aplicación no puede confirmar que el selector apunte realmente
+            a este descriptor sin conocer la tabla de descriptores. Ambos se analizan de forma independiente.
+            Usa el <strong>Modo Tabla</strong> para verificar la correspondencia.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── TAB: MODO TABLA ── -->
+      <div class="tab-panel" id="tab-panel-prot-table" role="tabpanel" aria-labelledby="tab-prot-table">
+
+        <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:1.5rem">
+
+          <!-- Tabla GDT -->
+          <div class="card">
+            <div class="card__header">
+              <div class="card__icon card__icon--blue">📋</div>
+              <div>
+                <div class="card__title">Tabla de Descriptores</div>
+                <div class="card__subtitle" id="gdtLdtLabel">GDT (Global Descriptor Table)</div>
+              </div>
+            </div>
+
+            <div class="form-group" style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap">
+              <button class="btn btn--sm btn--secondary" id="btnSwitchTable">Cambiar a LDT</button>
+              <button class="btn btn--sm btn--cyan" id="btnAddDesc">+ Agregar entrada</button>
+              <button class="btn btn--sm btn--ghost" id="btnLoadGdtExample">Cargar GDT ejemplo</button>
+            </div>
+
+            <div style="overflow-x:auto">
+              <table class="desc-table" id="gdtTable" aria-label="Tabla de descriptores GDT/LDT">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Descriptor (hex)</th>
+                    <th>Tipo</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="gdtTableBody">
+                  <tr>
+                    <td colspan="4" style="text-align:center;color:var(--color-text-faint);padding:1.5rem">
+                      La tabla está vacía. Carga un ejemplo o agrega entradas manualmente.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Resolución desde tabla -->
+          <div style="display:flex;flex-direction:column;gap:1.5rem">
+            <div class="card">
+              <div class="card__header">
+                <div class="card__icon card__icon--cyan">🎯</div>
+                <div><div class="card__title">Resolver dirección desde tabla</div></div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label form-label--required" for="tblSel">Selector (16 bits)</label>
+                <input class="form-input" type="text" id="tblSel"
+                  placeholder="p. ej. 0008h"
+                  aria-required="true" aria-describedby="tblSelErr" />
+                <div class="form-error" id="tblSelErr" role="alert" aria-live="polite"></div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Registro de segmento destino</label>
+                <div class="reg-selector" role="group">
+                  <button class="reg-btn reg-btn--active" data-reg-tbl="DS" id="tblRegDS">DS</button>
+                  <button class="reg-btn" data-reg-tbl="CS" id="tblRegCS">CS</button>
+                  <button class="reg-btn" data-reg-tbl="SS" id="tblRegSS">SS</button>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label form-label--required" for="tblOff">Offset</label>
+                <input class="form-input" type="text" id="tblOff"
+                  placeholder="p. ej. 00001000h"
+                  aria-required="true" aria-describedby="tblOffErr" />
+                <div class="form-error" id="tblOffErr" role="alert" aria-live="polite"></div>
+              </div>
+              <div class="btn-group">
+                <button class="btn btn--primary" id="btnTblResolve">⚡ Resolver</button>
+                <button class="btn btn--ghost" id="btnTblClear">✕ Limpiar</button>
+              </div>
+            </div>
+
+            <div class="status-msg" id="tblStatusMsg" role="status" aria-live="polite">
+              <span class="status-msg__icon"></span>
+              <div class="status-msg__body"></div>
+            </div>
+
+            <div class="result-panel" id="tblResultPanel" style="display:none">
+              <div class="result-panel__header"><span class="result-panel__title">Resultado</span></div>
+              <div class="result-panel__body" id="tblResultBody"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── TAB: PAGINACIÓN ── -->
+      <div class="tab-panel" id="tab-panel-prot-paging" role="tabpanel" aria-labelledby="tab-prot-paging">
+        <div class="card">
+          <div class="card__header">
+            <div class="card__icon" style="background:rgba(245,158,11,0.12);color:var(--color-warn);">📄</div>
+            <div>
+              <div class="card__title">Simulador de Paginación (didáctico)</div>
+              <div class="card__subtitle">Traslación de dirección lineal a dirección física</div>
+            </div>
+          </div>
+
+          <div class="status-msg status-msg--info status-msg--visible">
+            <span class="status-msg__icon">ℹ</span>
+            <div class="status-msg__body">
+              Este módulo simula la paginación de forma pedagógica con tablas de páginas de ejemplo.
+              La dirección física calculada corresponde únicamente a la configuración de ejemplo mostrada.
+              La dirección lineal proviene del módulo de modo protegido.
+            </div>
+          </div>
+
+          <div class="form-row mt-4">
+            <div class="form-group">
+              <label class="form-label" for="pagLinear">Dirección lineal (hex, 32 bits)</label>
+              <input class="form-input" type="text" id="pagLinear" placeholder="p. ej. 00401000h" />
+              <div class="form-error" id="pagLinearErr" role="alert" aria-live="polite"></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="pagPageSize">Tamaño de página</label>
+              <select class="form-select" id="pagPageSize">
+                <option value="4096">4 KiB (estándar)</option>
+                <option value="4194304">4 MiB (páginas grandes)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="btn-group">
+            <button class="btn btn--primary" id="btnPagCalc">⚡ Calcular paginación</button>
+            <button class="btn btn--ghost btn--sm" id="btnPagLoadExample">Cargar ejemplo</button>
+          </div>
+
+          <div class="status-msg mt-4" id="pagStatusMsg" role="status" aria-live="polite">
+            <span class="status-msg__icon"></span>
+            <div class="status-msg__body"></div>
+          </div>
+
+          <div class="result-panel mt-4" id="pagResultPanel" style="display:none">
+            <div class="result-panel__header"><span class="result-panel__title">Resultado de Paginación</span></div>
+            <div class="result-panel__body" id="pagResultBody"></div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ╔══════════════════════════════════════════════
+         ║  PÁGINA: REVERSING
+         ╚══════════════════════════════════════════ -->
+    <section class="page" id="page-reversing" aria-labelledby="rev-title">
+      <div class="section-header">
+        <div class="section-header__badge" style="background:rgba(124,58,237,0.12);color:var(--color-violet-lit);border-color:rgba(124,58,237,0.25)">🔬 Reversing</div>
+        <h2 class="section-header__title" id="rev-title">Reversing de Descriptores</h2>
+        <p class="section-header__desc">
+          Introduce exactamente 64 bits en binario para descubrir los campos del descriptor x86.
+          Se aceptan espacios y saltos de línea entre grupos de bits.
+        </p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+
+        <!-- Entrada binaria -->
+        <div class="card">
+          <div class="card__header">
+            <div class="card__icon card__icon--violet">💾</div>
+            <div>
+              <div class="card__title">Entrada binaria del descriptor</div>
+              <div class="card__subtitle">Exactamente 64 bits (0 y 1)</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label form-label--required" for="revBin">
+              Descriptor binario (64 bits, MSB a la izquierda)
+            </label>
+            <textarea class="form-textarea" id="revBin" rows="4"
+              placeholder="p. ej.&#10;00000000 11001111 10011010 00000000&#10;00000000 00000000 11111111 11111111"
+              aria-required="true" aria-describedby="revBinErr revBitCounter"
+              spellcheck="false"></textarea>
+            <div class="form-error" id="revBinErr" role="alert" aria-live="polite"></div>
+            <div class="bit-counter" id="revBitCounter" aria-live="polite">
+              Bits introducidos: <span class="bit-count-val" id="revBitCount">0</span> / 64
+            </div>
+          </div>
+
+          <div class="btn-group" style="flex-wrap:wrap">
+            <button class="btn btn--primary" id="btnRevAnalyze">🔍 Analizar descriptor</button>
+            <button class="btn btn--ghost" id="btnRevClear">✕ Limpiar</button>
+            <button class="btn btn--cyan" id="btnRevStep">▶ Paso a paso</button>
+            <button class="btn btn--ghost btn--sm" id="btnRevLoadEx">Cargar ejemplo</button>
+          </div>
+
+          <div class="status-msg mt-4" id="revStatusMsg" role="status" aria-live="polite">
+            <span class="status-msg__icon"></span>
+            <div class="status-msg__body"></div>
+          </div>
+
+          <!-- Nota sobre convención de bits -->
+          <div class="status-msg status-msg--info status-msg--visible mt-4" style="opacity:0.7;font-size:0.8rem">
+            <span class="status-msg__icon">ℹ</span>
+            <div class="status-msg__body">
+              Convención: el primer bit introducido es el bit 63 (MSB). Los bytes se almacenan
+              en memoria en formato <strong>little-endian</strong>; esta entrada es una representación visual de los 64 bits del descriptor.
+            </div>
+          </div>
+        </div>
+
+        <!-- Visualización de bits -->
+        <div class="card" id="revBitCard" style="display:none">
+          <div class="card__header">
+            <div class="card__icon card__icon--violet">🎨</div>
+            <div>
+              <div class="card__title">Visualización de bits</div>
+              <div class="card__subtitle">Haz clic en un campo para resaltarlo</div>
+            </div>
+          </div>
+          <div class="bit-display" id="revBitDisplay" role="group" aria-label="Bits del descriptor"></div>
+          <div style="margin-top:1rem;font-size:var(--text-xs);color:var(--color-text-faint)">
+            Bit 63 (izq.) ──────────────────────────── Bit 0 (der.)
+          </div>
+          <div style="margin-top:0.5rem" id="revBitTooltip" class="status-msg status-msg--info" style="font-size:0.8rem"></div>
+        </div>
+      </div>
+
+      <!-- Resultado del reversing -->
+      <div id="revResultSection" style="display:none">
+
+        <!-- Resumen -->
+        <div class="card mt-6" id="revSummaryCard">
+          <div class="card__header">
+            <div class="card__icon card__icon--violet">📊</div>
+            <div>
+              <div class="card__title">Resumen del Descriptor</div>
+              <div class="card__subtitle" id="revSummaryType">—</div>
+            </div>
+            <div style="margin-left:auto;display:flex;gap:0.5rem">
+              <button class="btn btn--ghost btn--sm" id="btnRevCopyResult">📋 Copiar resultado</button>
+              <button class="btn btn--ghost btn--sm" id="btnRevReset">↺ Reiniciar</button>
+            </div>
+          </div>
+
+          <div class="result-panel">
+            <div class="result-panel__header"><span class="result-panel__title">Campos reconstruidos</span></div>
+            <div class="result-panel__body" id="revSummaryBody"></div>
+          </div>
+        </div>
+
+        <!-- Tabla de campos -->
+        <div class="card mt-4">
+          <div class="card__header">
+            <div class="card__icon card__icon--violet">📋</div>
+            <div><div class="card__title">Descomposición de campos</div></div>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="fields-table" id="revFieldsTable" aria-label="Campos del descriptor">
+              <thead>
+                <tr>
+                  <th style="width:24px"></th>
+                  <th>Campo</th>
+                  <th>Bits</th>
+                  <th>Binario</th>
+                  <th>Hex</th>
+                  <th>Valor</th>
+                  <th>Interpretación</th>
+                </tr>
+              </thead>
+              <tbody id="revFieldsBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Explicación en lenguaje sencillo -->
+        <div class="card mt-4">
+          <div class="card__header">
+            <div class="card__icon card__icon--green">💬</div>
+            <div><div class="card__title">Explicación en lenguaje sencillo</div></div>
+          </div>
+          <div id="revExplainBody" style="font-size:var(--text-sm);color:var(--color-text-muted);line-height:1.9"></div>
+        </div>
+
+      </div>
+
+      <!-- Stepper reversing -->
+      <div class="stepper mt-6" id="revStepper" style="display:none">
+        <div class="stepper__progress"><div class="stepper__progress-bar" id="revStepBar" style="width:0%"></div></div>
+        <div class="stepper__header">
+          <span class="stepper__step-indicator" id="revStepNum">Paso 1 de —</span>
+          <span class="stepper__title" id="revStepTitle">—</span>
+        </div>
+        <div class="stepper__body">
+          <div class="stepper__content" id="revStepContent"></div>
+          <div class="stepper__value-display" id="revStepValue" style="display:none"></div>
+        </div>
+        <div class="stepper__controls">
+          <button class="btn btn--ghost btn--sm" id="btnRevStepPrev" disabled>‹ Anterior</button>
+          <button class="btn btn--ghost btn--sm" id="btnRevStepPlay">▶ Reproducir</button>
+          <button class="btn btn--ghost btn--sm" id="btnRevStepNext">Siguiente ›</button>
+          <button class="btn btn--ghost btn--sm" id="btnRevStepReset" style="margin-left:auto">↺ Reiniciar</button>
+          <button class="btn btn--ghost btn--sm" id="btnRevStepClose">✕</button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ╔══════════════════════════════════════════════
+         ║  PÁGINA: LABORATORIO DE EJERCICIOS
+         ╚══════════════════════════════════════════ -->
+    <section class="page" id="page-exercises" aria-labelledby="ex-title">
+      <div class="section-header">
+        <div class="section-header__badge">✏️ Práctica</div>
+        <h2 class="section-header__title" id="ex-title">Laboratorio de Ejercicios</h2>
+        <p class="section-header__desc">
+          Pon a prueba lo aprendido con ejercicios generados automáticamente. Los valores son reales, no predeterminados.
+        </p>
+      </div>
+
+      <!-- Marcador -->
+      <div class="exercise-score">
+        <div class="exercise-score__stat exercise-score__stat--correct">
+          <div class="exercise-score__number" id="scoreCorrect">0</div>
+          <div class="exercise-score__label">Correctas</div>
+        </div>
+        <div class="exercise-score__divider"></div>
+        <div class="exercise-score__stat exercise-score__stat--wrong">
+          <div class="exercise-score__number" id="scoreWrong">0</div>
+          <div class="exercise-score__label">Incorrectas</div>
+        </div>
+        <div class="exercise-score__divider"></div>
+        <div class="exercise-score__stat">
+          <div class="exercise-score__number" id="scoreTotal">0</div>
+          <div class="exercise-score__label">Total</div>
+        </div>
+        <div style="margin-left:auto;display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center">
+          <button class="btn btn--ghost btn--sm" id="btnResetScore">↺ Reiniciar puntaje</button>
+        </div>
+      </div>
+
+      <!-- Selector de categoría -->
+      <div class="card mb-6">
+        <div class="card__header">
+          <div class="card__icon card__icon--green">🎯</div>
+          <div><div class="card__title">Categoría</div></div>
+        </div>
+        <div class="btn-group" style="flex-wrap:wrap" id="exCatBtns">
+          <button class="btn btn--primary btn--sm" data-cat="real">Modo Real</button>
+          <button class="btn btn--ghost btn--sm" data-cat="selector">Selector</button>
+          <button class="btn btn--ghost btn--sm" data-cat="lineal">Dirección Lineal</button>
+          <button class="btn btn--ghost btn--sm" data-cat="descriptor">Descriptor</button>
+          <button class="btn btn--ghost btn--sm" data-cat="error">Identificar Error</button>
+          <button class="btn btn--ghost btn--sm" data-cat="reversing">Reversing</button>
+        </div>
+      </div>
+
+      <!-- Contenedor de ejercicio activo -->
+      <div id="exerciseContainer">
+        <div class="exercise-card" id="activeExercise">
+          <div style="text-align:center;padding:2rem;color:var(--color-text-muted)">
+            Selecciona una categoría para comenzar.
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-group mt-4">
+        <button class="btn btn--primary" id="btnNewExercise" style="display:none">⟳ Nuevo ejercicio</button>
+      </div>
+
+    </section>
+
+    <!-- ╔══════════════════════════════════════════════
+         ║  PÁGINA: TEORÍA Y GLOSARIO
+         ╚══════════════════════════════════════════ -->
+    <section class="page" id="page-theory" aria-labelledby="theory-title">
+      <div class="section-header">
+        <div class="section-header__badge">📚 Referencia</div>
+        <h2 class="section-header__title" id="theory-title">Teoría y Glosario</h2>
+        <p class="section-header__desc">Fundamentos de arquitectura x86 y definiciones clave.</p>
+      </div>
+
+      <!-- Acordeones de teoría -->
+      <div class="theory-section" id="ts1">
+        <div class="theory-section__header" onclick="toggleTheory('ts1')" role="button" tabindex="0" aria-expanded="false">
+          <span class="theory-section__title">1. Modo Real — El modelo de memoria del 8086</span>
+          <span class="theory-section__chevron">▾</span>
+        </div>
+        <div class="theory-section__body">
+          <p>El procesador Intel 8086 implementó un modelo de memoria segmentada con un espacio de direccionamiento de <strong>20 bits (1 MiB)</strong>. Dado que los registros internos son de 16 bits, el cálculo de la dirección física requiere la siguiente operación:</p>
+          <p style="margin:1rem 0;padding:0.75rem 1rem;background:rgba(6,182,212,0.06);border-left:3px solid var(--color-cyan);border-radius:0.375rem;font-family:var(--font-mono)">Dirección física = Segmento × 10h + Offset</p>
+          <p>El segmento se desplaza cuatro posiciones a la izquierda (multiplicación por 16) para obtener la dirección base del segmento. A continuación se suma el desplazamiento (offset) de 16 bits.</p>
+          <p style="margin-top:1rem"><strong>Desbordamiento de 20 bits:</strong> Si la dirección aritmética supera los 20 bits (1048575 = FFFFFh), el procesador 8086 original aplica un wrap: los bits superiores se descartan y solo se conservan los 20 inferiores. Con la línea A20 habilitada en sistemas modernos, el bit 20 también se transmite.</p>
+        </div>
+      </div>
+
+      <div class="theory-section" id="ts2">
+        <div class="theory-section__header" onclick="toggleTheory('ts2')" role="button" tabindex="0" aria-expanded="false">
+          <span class="theory-section__title">2. Modo Protegido — Selectores y descriptores</span>
+          <span class="theory-section__chevron">▾</span>
+        </div>
+        <div class="theory-section__body">
+          <p>En el modo protegido de 32 bits, los registros de segmento contienen <strong>selectores</strong> de 16 bits, no direcciones base directas. El selector identifica una entrada de la GDT o LDT:</p>
+          <ul style="margin:1rem 0 1rem 1.5rem;line-height:2">
+            <li><strong>Bits 15–3:</strong> Índice de la entrada en la tabla (0–8191).</li>
+            <li><strong>Bit 2 (TI):</strong> 0 = GDT, 1 = LDT.</li>
+            <li><strong>Bits 1–0 (RPL):</strong> Nivel de privilegio solicitado (0 = mayor, 3 = menor).</li>
+          </ul>
+          <p>El descriptor de 8 bytes contiene la base (32 bits), el límite (20 bits), los atributos y los indicadores de control. La dirección lineal se calcula como:</p>
+          <p style="margin:1rem 0;padding:0.75rem 1rem;background:rgba(6,182,212,0.06);border-left:3px solid var(--color-cyan);border-radius:0.375rem;font-family:var(--font-mono)">Dirección lineal = Base del segmento + Offset</p>
+          <p>La dirección <strong>física</strong> requiere paginación para ser determinada. Si la paginación está deshabilitada, la dirección lineal coincide con la física.</p>
+        </div>
+      </div>
+
+      <div class="theory-section" id="ts3">
+        <div class="theory-section__header" onclick="toggleTheory('ts3')" role="button" tabindex="0" aria-expanded="false">
+          <span class="theory-section__title">3. Estructura del descriptor de segmento (64 bits)</span>
+          <span class="theory-section__chevron">▾</span>
+        </div>
+        <div class="theory-section__body">
+          <p>Distribución de bits del descriptor clásico x86 de 8 bytes:</p>
+          <table style="width:100%;border-collapse:collapse;font-size:0.85rem;margin-top:1rem">
+            <thead><tr style="background:var(--color-surface-2)">
+              <th style="padding:0.5rem;text-align:left;border:1px solid var(--color-border)">Bits</th>
+              <th style="padding:0.5rem;text-align:left;border:1px solid var(--color-border)">Campo</th>
+              <th style="padding:0.5rem;text-align:left;border:1px solid var(--color-border)">Descripción</th>
+            </tr></thead>
+            <tbody>
+              <tr><td style="padding:0.5rem;border:1px solid var(--color-border);font-family:monospace">0–15</td><td style="padding:0.5rem;border:1px solid var(--color-border)">Límite bajo</td><td style="padding:0.5rem;border:1px solid var(--color-border)">16 bits inferiores del límite de 20 bits</td></tr>
+              <tr><td style="padding:0.5rem;border:1px solid var(--color-border);font-family:monospace">16–31</td><td style="padding:0.5rem;border:1px solid var(--color-border)">Base baja</td><td style="padding:0.5rem;border:1px solid var(--color-border)">16 bits inferiores de la base de 32 bits</td></tr>
+              <tr><td style="padding:0.5rem;border:1px solid var(--color-border);font-family:monospace">32–39</td><td style="padding:0.5rem;border:1px solid var(--color-border)">Base intermedia</td><td style="padding:0.5rem;border:1px solid var(--color-border)">Bits 16–23 de la base</td></tr>
+              <tr><td style="padding:0.5rem;border:1px solid var(--color-border);font-family:monospace">40–43</td><td style="padding:0.5rem;border:1px solid var(--color-border)">Tipo</td><td style="padding:0.5rem;border:1px solid var(--color-border)">4 bits que definen el tipo de segmento</td></tr>
+              <tr><td style="padding:0.5rem;border:1px solid var(--color-border);font-family:monospace">44</td><td style="padding:0.5rem;border:1px solid var(--color-border)">S</td><td style="padding:0.5rem;border:1px solid var(--color-border)">0 = descriptor de sistema, 1 = código/datos</td></tr>
+              <tr><td style="padding:0.5rem;border:1px solid var(--color-border);font-family:monospace">45–46</td><td style="padding:0.5rem;border:1px solid var(--color-border)">DPL</td><td style="padding:0.5rem;border:1px solid var(--color-border)">Nivel de privilegio del descriptor (0–3)</td></tr>
+              <tr><td style="padding:0.5rem;border:1px solid var(--color-border);font-family:monospace">47</td><td style="padding:0.5rem;border:1px solid var(--color-border)">P</td><td style="padding:0.5rem;border:1px solid var(--color-border)">1 = segmento presente en memoria</td></tr>
+              <tr><td style="padding:0.5rem;border:1px solid var(--color-border);font-family:monospace">48–51</td><td style="padding:0.5rem;border:1px solid var(--color-border)">Límite alto</td><td style="padding:0.5rem;border:1px solid var(--color-border)">4 bits superiores del límite de 20 bits</td></tr>
+              <tr><td style="padding:0.5rem;border:1px solid var(--color-border);font-family:monospace">52</td><td style="padding:0.5rem;border:1px solid var(--color-border)">AVL</td><td style="padding:0.5rem;border:1px solid var(--color-border)">Disponible para uso del sistema operativo</td></tr>
+              <tr><td style="padding:0.5rem;border:1px solid var(--color-border);font-family:monospace">53</td><td style="padding:0.5rem;border:1px solid var(--color-border)">L</td><td style="padding:0.5rem;border:1px solid var(--color-border)">Modo 64 bits (IA-32e)</td></tr>
+              <tr><td style="padding:0.5rem;border:1px solid var(--color-border);font-family:monospace">54</td><td style="padding:0.5rem;border:1px solid var(--color-border)">D/B</td><td style="padding:0.5rem;border:1px solid var(--color-border)">0 = 16 bits, 1 = 32 bits (operandos y pila)</td></tr>
+              <tr><td style="padding:0.5rem;border:1px solid var(--color-border);font-family:monospace">55</td><td style="padding:0.5rem;border:1px solid var(--color-border)">G</td><td style="padding:0.5rem;border:1px solid var(--color-border)">Granularidad: 0 = bytes, 1 = páginas de 4 KiB</td></tr>
+              <tr><td style="padding:0.5rem;border:1px solid var(--color-border);font-family:monospace">56–63</td><td style="padding:0.5rem;border:1px solid var(--color-border)">Base alta</td><td style="padding:0.5rem;border:1px solid var(--color-border)">Bits 24–31 de la base</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="theory-section" id="ts4">
+        <div class="theory-section__header" onclick="toggleTheory('ts4')" role="button" tabindex="0" aria-expanded="false">
+          <span class="theory-section__title">4. Tipos de segmentos — Interpretación del campo Tipo</span>
+          <span class="theory-section__chevron">▾</span>
+        </div>
+        <div class="theory-section__body">
+          <p>Cuando S=1 (código/datos), los 4 bits del campo Tipo se interpretan así:</p>
+          <p style="margin-top:0.75rem"><strong>Segmentos de Datos (bit 3 = 0):</strong></p>
+          <ul style="margin:0.5rem 0 1rem 1.5rem;line-height:1.9;font-size:0.9rem">
+            <li>Bit 2: Expansión descendente (E) — 0 = hacia arriba, 1 = hacia abajo</li>
+            <li>Bit 1: Escritura (W) — 0 = solo lectura, 1 = lectura/escritura</li>
+            <li>Bit 0: Accedido (A)</li>
+          </ul>
+          <p><strong>Segmentos de Código (bit 3 = 1):</strong></p>
+          <ul style="margin:0.5rem 0 1rem 1.5rem;line-height:1.9;font-size:0.9rem">
+            <li>Bit 2: Conformidad (C) — 0 = no conforme, 1 = conforme</li>
+            <li>Bit 1: Lectura (R) — 0 = solo ejecución, 1 = ejecución/lectura</li>
+            <li>Bit 0: Accedido (A)</li>
+          </ul>
+          <p>Cuando S=0 (descriptor de sistema), el campo Tipo identifica puertas de llamada, puertas de interrupción, descriptores TSS, descriptores LDT, etc.</p>
+        </div>
+      </div>
+
+      <!-- Glosario -->
+      <div class="card mt-6">
+        <div class="card__header">
+          <div class="card__icon" style="background:rgba(245,158,11,0.12);color:var(--color-warn)">📖</div>
+          <div><div class="card__title">Glosario de términos</div></div>
+        </div>
+        <div id="glossaryBody">
+          <div class="glossary-term"><div class="glossary-term__word">Segmento</div><div class="glossary-term__def">Región de memoria con una base, un límite y atributos de acceso. En modo real, la base se calcula como Segmento × 16.</div></div>
+          <div class="glossary-term"><div class="glossary-term__word">Offset</div><div class="glossary-term__def">Desplazamiento dentro de un segmento, medido en bytes desde la base del segmento.</div></div>
+          <div class="glossary-term"><div class="glossary-term__word">Dirección física</div><div class="glossary-term__def">Dirección real en el bus de memoria que corresponde a una celda de la RAM. En modo real coincide con la aritmética segmento:offset. En modo protegido puede requerir paginación.</div></div>
+          <div class="glossary-term"><div class="glossary-term__word">Dirección lineal</div><div class="glossary-term__def">Resultado de sumar la base del segmento al offset en modo protegido. Si la paginación está deshabilitada, coincide con la dirección física.</div></div>
+          <div class="glossary-term"><div class="glossary-term__word">Selector</div><div class="glossary-term__def">Valor de 16 bits almacenado en un registro de segmento (CS, DS, SS, etc.) que identifica una entrada de la GDT o LDT.</div></div>
+          <div class="glossary-term"><div class="glossary-term__word">Descriptor</div><div class="glossary-term__def">Estructura de 8 bytes en la GDT o LDT que describe las características de un segmento: base, límite, tipo y atributos.</div></div>
+          <div class="glossary-term"><div class="glossary-term__word">GDT</div><div class="glossary-term__def">Global Descriptor Table. Tabla de descriptores accesible por todo el sistema. El registro GDTR apunta a ella.</div></div>
+          <div class="glossary-term"><div class="glossary-term__word">LDT</div><div class="glossary-term__def">Local Descriptor Table. Tabla de descriptores específica de un proceso o tarea. El registro LDTR la referencia.</div></div>
+          <div class="glossary-term"><div class="glossary-term__word">DPL</div><div class="glossary-term__def">Descriptor Privilege Level. Nivel de privilegio del segmento definido en el descriptor (0 = más privilegiado, 3 = menos).</div></div>
+          <div class="glossary-term"><div class="glossary-term__word">RPL</div><div class="glossary-term__def">Requested Privilege Level. Bits 1–0 del selector. Indica el nivel de privilegio solicitado por quien accede al segmento.</div></div>
+          <div class="glossary-term"><div class="glossary-term__word">TI</div><div class="glossary-term__def">Table Indicator. Bit 2 del selector. 0 = usar GDT, 1 = usar LDT.</div></div>
+          <div class="glossary-term"><div class="glossary-term__word">Límite</div><div class="glossary-term__def">Tamaño máximo del segmento menos uno. Con G=0 se mide en bytes (20 bits, máx. ~1 MiB). Con G=1 se mide en páginas de 4 KiB (máx. 4 GiB).</div></div>
+          <div class="glossary-term"><div class="glossary-term__word">Base</div><div class="glossary-term__def">Dirección lineal del primer byte del segmento. De 32 bits en modo protegido de 32 bits.</div></div>
+          <div class="glossary-term"><div class="glossary-term__word">Granularidad (G)</div><div class="glossary-term__def">Bit 55 del descriptor. G=0: límite en bytes. G=1: límite en páginas de 4 KiB (límite efectivo = límite × 4096 + 4095).</div></div>
+          <div class="glossary-term"><div class="glossary-term__word">Paginación</div><div class="glossary-term__def">Mecanismo que divide la memoria en páginas de tamaño fijo y mapea direcciones lineales a direcciones físicas mediante tablas de páginas.</div></div>
+          <div class="glossary-term"><div class="glossary-term__word">Privilegio</div><div class="glossary-term__def">Mecanismo de protección que controla qué código puede acceder a qué recursos. El procesador compara CPL, RPL y DPL al cargar selectores.</div></div>
+          <div class="glossary-term"><div class="glossary-term__word">Presencia (P)</div><div class="glossary-term__def">Bit 47 del descriptor. P=1: el segmento está cargado en memoria. P=0: genera una excepción de segmento no presente al acceder.</div></div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ╔══════════════════════════════════════════════
+         ║  PÁGINA: PRUEBAS
+         ╚══════════════════════════════════════════ -->
+    <section class="page" id="page-tests" aria-labelledby="tests-title">
+      <div class="section-header">
+        <div class="section-header__badge">✅ QA</div>
+        <h2 class="section-header__title" id="tests-title">Pruebas Automatizadas</h2>
+        <p class="section-header__desc">
+          Suite de pruebas unitarias que valida los motores de cálculo. Ejecuta las pruebas y verifica los resultados.
+        </p>
+      </div>
+
+      <div class="card mb-6">
+        <div class="card__header">
+          <div class="card__icon card__icon--green">🧪</div>
+          <div>
+            <div class="card__title">Suite de Pruebas ARQ LAB</div>
+            <div class="card__subtitle">Validaciones de conversión, modo real, selector, descriptor y entrada binaria</div>
+          </div>
+          <div style="margin-left:auto">
+            <button class="btn btn--primary" id="btnRunTests">▶ Ejecutar todas las pruebas</button>
+          </div>
+        </div>
+
+        <!-- Resumen -->
+        <div class="exercise-score" id="testSummary" style="display:none">
+          <div class="exercise-score__stat exercise-score__stat--correct">
+            <div class="exercise-score__number" id="testPassed">0</div>
+            <div class="exercise-score__label">Pasadas</div>
+          </div>
+          <div class="exercise-score__divider"></div>
+          <div class="exercise-score__stat exercise-score__stat--wrong">
+            <div class="exercise-score__number" id="testFailed">0</div>
+            <div class="exercise-score__label">Fallidas</div>
+          </div>
+          <div class="exercise-score__divider"></div>
+          <div class="exercise-score__stat">
+            <div class="exercise-score__number" id="testTotal">0</div>
+            <div class="exercise-score__label">Total</div>
+          </div>
+        </div>
+
+        <!-- Resultados -->
+        <div id="testResultList" style="margin-top:1rem"></div>
+      </div>
+
+      <!-- Casos de prueba descritos -->
+      <div class="card">
+        <div class="card__header">
+          <div class="card__icon card__icon--blue">📋</div>
+          <div><div class="card__title">Casos de prueba mínimos (spec)</div></div>
+        </div>
+        <div style="font-size:var(--text-sm);color:var(--color-text-muted);line-height:1.9">
+          <div class="glossary-term"><div class="glossary-term__word">Caso 1</div><div class="glossary-term__def">Seg=1000h, Off=0020h → 10020h</div></div>
+          <div class="glossary-term"><div class="glossary-term__word">Caso 2</div><div class="glossary-term__def">Seg=2000h, Off=0010h → 20010h</div></div>
+          <div class="glossary-term"><div class="glossary-term__word">Caso 3</div><div class="glossary-term__def">Seg=0000h, Off=0000h → 00000h</div></div>
+          <div class="glossary-term"><div class="glossary-term__word">Caso 4</div><div class="glossary-term__def">Seg=FFFFh, Off=FFFFh → aritmético 10FFEFh; 8086 wrap → 0FFEFh</div></div>
+          <div class="glossary-term"><div class="glossary-term__word">Caso 5</div><div class="glossary-term__def">63 bits → rechazado por longitud insuficiente</div></div>
+          <div class="glossary-term"><div class="glossary-term__word">Caso 6</div><div class="glossary-term__def">65 bits → rechazado por longitud excesiva</div></div>
+          <div class="glossary-term"><div class="glossary-term__word">Caso 7</div><div class="glossary-term__def">"012102" → rechazado por caracteres no binarios</div></div>
+          <div class="glossary-term"><div class="glossary-term__word">Caso 8</div><div class="glossary-term__def">Selector 000Bh (0000 0000 0000 1011) → índice=1, TI=0 (GDT, bit 2=0), RPL=3. Selector 000Fh → índice=1, TI=1 (LDT), RPL=3</div></div>
+          <div class="glossary-term"><div class="glossary-term__word">Caso 9</div><div class="glossary-term__def">Offset > límite expand-up → rechazado</div></div>
+          <div class="glossary-term"><div class="glossary-term__word">Caso 10</div><div class="glossary-term__def">Offset ≤ límite expand-down → rechazado</div></div>
+          <div class="glossary-term"><div class="glossary-term__word">Caso 11</div><div class="glossary-term__def">Índice fuera de tabla → error comprensible</div></div>
+          <div class="glossary-term"><div class="glossary-term__word">Caso 12</div><div class="glossary-term__def">Descriptor P=0 → acceso rechazado</div></div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ╔══════════════════════════════════════════════
+         ║  PÁGINA: ACERCA DE
+         ╚══════════════════════════════════════════ -->
+    <section class="page" id="page-about" aria-labelledby="about-title">
+      <div class="section-header">
+        <div class="section-header__badge">ℹ️ Información</div>
+        <h2 class="section-header__title" id="about-title">Acerca de ARQ LAB</h2>
+      </div>
+
+      <div class="card mb-4">
+        <div class="card__header">
+          <div class="card__icon card__icon--blue">🏛</div>
+          <div><div class="card__title">ARQ LAB — X86 Memory Addressing Simulator</div></div>
+        </div>
+        <p style="color:var(--color-text-muted);line-height:1.9;margin-bottom:1rem">
+          Aplicación educativa para estudiantes de Arquitectura de Computadores.
+          Permite calcular, visualizar y analizar el direccionamiento x86 en Modo Real y Modo Protegido.
+        </p>
+        <div class="btn-group">
+          <button class="btn btn--primary" data-page="tests">✅ Ver pruebas</button>
+          <button class="btn btn--ghost" id="btnTourAbout">▶ Guía de demostración</button>
+        </div>
+      </div>
+
+      <div class="card mb-4">
+        <div class="card__header">
+          <div class="card__icon card__icon--green">✅</div>
+          <div><div class="card__title">Módulos implementados</div></div>
+        </div>
+        <div style="font-size:var(--text-sm);color:var(--color-text-muted);line-height:2">
+          <div>✓ <strong>Modo Real</strong> — Fórmula Seg×16+Off, modelos 8086 y A20, visualización animada, paso a paso</div>
+          <div>✓ <strong>Modo Protegido</strong> — Selector (índice/TI/RPL), descriptores GDT/LDT, DS/CS/SS, dirección lineal</div>
+          <div>✓ <strong>Reversing de descriptores</strong> — Entrada de 64 bits, extracción de todos los campos, explicación pedagógica</div>
+          <div>✓ <strong>Laboratorio de ejercicios</strong> — 6 categorías, valores generados por el motor, verificación real</div>
+          <div>✓ <strong>Pruebas automatizadas</strong> — +30 casos de prueba, todos los casos mínimos especificados</div>
+          <div>✓ <strong>Teoría y Glosario</strong> — Acordeones de teoría, glosario interactivo</div>
+          <div>⧖ <strong>Paginación</strong> — Simulación didáctica básica implementada</div>
+        </div>
+      </div>
+
+      <!-- Guía de demostración -->
+      <div class="card mb-4">
+        <div class="card__header">
+          <div class="card__icon" style="background:rgba(245,158,11,0.12);color:var(--color-warn)">📢</div>
+          <div><div class="card__title">Guía de exposición (~5 minutos)</div></div>
+        </div>
+        <div style="font-size:var(--text-sm);color:var(--color-text-muted);line-height:2">
+          <p><strong>1. Modo Real (1 min 30 s)</strong></p>
+          <p style="margin-left:1rem">
+            Navegar a <em>Modo Real</em>. Pulsar el ejemplo <strong>1000h:0020h</strong> → mostrar resultado 10020h.
+            Pulsar <em>Paso a paso</em> y avanzar por cada operación (multiplicación, suma, dirección final).
+            Cambiar al modelo A20 y mostrar la diferencia al usar FFFFh:FFFFh.
+          </p>
+          <p><strong>2. Modo Protegido (2 min)</strong></p>
+          <p style="margin-left:1rem">
+            Ir a <em>Modo Protegido → Modo Tabla</em>. Pulsar <em>Cargar GDT ejemplo</em>.
+            Usar selector <strong>0008h</strong> con registro DS y offset <strong>00001000h</strong>.
+            Mostrar la resolución del selector (índice=1, TI=0 → GDT), la decodificación del descriptor y la dirección lineal resultante.
+            Intentar usar el mismo selector con CS para mostrar el rechazo de tipo.
+          </p>
+          <p><strong>3. Reversing (1 min 30 s)</strong></p>
+          <p style="margin-left:1rem">
+            Ir a <em>Reversing</em>. Pulsar <em>Cargar ejemplo</em> y luego <em>Analizar descriptor</em>.
+            Señalar cada campo coloreado, explicar base, límite efectivo, tipo y privilegios.
+            Pulsar <em>Paso a paso</em> y recorrer los campos uno por uno.
+          </p>
+        </div>
+      </div>
+
+      <div class="card mb-4">
+        <div class="card__header">
+          <div class="card__icon card__icon--cyan">⚠</div>
+          <div><div class="card__title">Limitaciones conocidas</div></div>
+        </div>
+        <div style="font-size:var(--text-sm);color:var(--color-text-muted);line-height:2">
+          <div>• El simulador de paginación es didáctico: las tablas de páginas son de ejemplo y no reproducen una configuración real del sistema operativo.</div>
+          <div>• Las comprobaciones de privilegio implementadas son las principales (CPL, RPL, DPL básico para carga de registros). No reproducen la totalidad de las reglas de acceso en llamadas a procedimientos con cambio de nivel.</div>
+          <div>• El modelo de 32 bits no cubre el modo de 64 bits (IA-32e/long mode), donde la segmentación tiene un rol reducido.</div>
+          <div>• No se simula TLB, caché ni ciclos de bus reales.</div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     MODAL DE TOUR
+══════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="tourModal" role="dialog" aria-modal="true" aria-labelledby="tourModalTitle">
+  <div class="modal">
+    <div class="modal__header">
+      <h3 class="modal__title" id="tourModalTitle">Recorrido guiado — ARQ LAB</h3>
+      <button class="modal__close" id="btnTourClose" aria-label="Cerrar modal">✕</button>
+    </div>
+    <p style="color:var(--color-text-muted);font-size:var(--text-sm);margin-bottom:1.5rem">
+      Sigue este recorrido para conocer las funcionalidades principales de la aplicación.
+    </p>
+    <ol style="font-size:var(--text-sm);color:var(--color-text-muted);line-height:2.2;padding-left:1.2rem">
+      <li>Ir a <strong>Modo Real</strong> y calcular la dirección para el ejemplo <code>1000h:0020h</code>.</li>
+      <li>Activar <strong>Paso a paso</strong> para ver cada operación explicada.</li>
+      <li>Ir a <strong>Modo Protegido → Modo Tabla</strong> y cargar la GDT de ejemplo.</li>
+      <li>Resolver el selector <code>0008h</code> con DS y un offset para obtener la dirección lineal.</li>
+      <li>Ir a <strong>Reversing</strong>, cargar un descriptor de ejemplo y explorar sus campos.</li>
+      <li>Ir a <strong>Laboratorio</strong>, seleccionar <em>Modo Real</em> y responder el ejercicio.</li>
+      <li>Ir a <strong>Pruebas</strong> y ejecutar la suite para verificar los cálculos.</li>
+    </ol>
+    <div style="margin-top:1.5rem;display:flex;justify-content:flex-end">
+      <button class="btn btn--primary" id="btnTourStart" data-page="real">Comenzar por Modo Real →</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Agregar descriptor a GDT -->
+<div class="modal-overlay" id="addDescModal" role="dialog" aria-modal="true" aria-labelledby="addDescModalTitle">
+  <div class="modal">
+    <div class="modal__header">
+      <h3 class="modal__title" id="addDescModalTitle">Agregar descriptor a la tabla</h3>
+      <button class="modal__close" id="btnAddDescClose" aria-label="Cerrar">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label form-label--required" for="modalDescHex">Descriptor (16 dígitos hexadecimales)</label>
+      <input class="form-input" type="text" id="modalDescHex" placeholder="p. ej. 00CF9A000000FFFF" maxlength="18" />
+      <div class="form-error" id="modalDescHexErr" role="alert" aria-live="polite"></div>
+      <div class="form-help">8 bytes = 64 bits. Introduce sin espacios.</div>
+    </div>
+    <div class="btn-group" style="margin-top:1rem">
+      <button class="btn btn--primary" id="btnModalDescConfirm">Agregar</button>
+      <button class="btn btn--ghost" id="btnModalDescCancel">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts — en el orden correcto de dependencias -->
+<script src="js/utils.js"></script>
+<script src="js/realmode.js"></script>
+<script src="js/selector.js"></script>
+<script src="js/descriptor.js"></script>
+<script src="js/exercises.js"></script>
+<script src="js/tests.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
