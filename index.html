@@ -214,16 +214,16 @@
           </div>
         </div>
         <div style="display:flex;flex-wrap:wrap;gap:0.75rem">
-          <span class="dashboard-card__badge" style="color:var(--color-success)">✓ Modo Real 8086</span>
-          <span class="dashboard-card__badge" style="color:var(--color-success)">✓ Línea A20</span>
-          <span class="dashboard-card__badge" style="color:var(--color-success)">✓ Selector GDT/LDT</span>
-          <span class="dashboard-card__badge" style="color:var(--color-success)">✓ Descriptores x86</span>
-          <span class="dashboard-card__badge" style="color:var(--color-success)">✓ DS / CS / SS</span>
-          <span class="dashboard-card__badge" style="color:var(--color-success)">✓ Reversing binario</span>
-          <span class="dashboard-card__badge" style="color:var(--color-success)">✓ Ejercicios dinámicos</span>
-          <span class="dashboard-card__badge" style="color:var(--color-success)">✓ Pruebas automatizadas</span>
-          <span class="dashboard-card__badge" style="color:var(--color-success)">✓ Modo pedagógico</span>
-          <span class="dashboard-card__badge" style="color:var(--color-cyan)">⧖ Paginación (simulación)</span>
+          <span class="feature-pill">✓ Modo Real 8086</span>
+          <span class="feature-pill">✓ Línea A20</span>
+          <span class="feature-pill">✓ Selector GDT/LDT</span>
+          <span class="feature-pill">✓ Descriptores x86</span>
+          <span class="feature-pill">✓ DS / CS / SS</span>
+          <span class="feature-pill">✓ Reversing binario</span>
+          <span class="feature-pill">✓ Ejercicios dinámicos</span>
+          <span class="feature-pill">✓ Pruebas automatizadas</span>
+          <span class="feature-pill">✓ Modo pedagógico</span>
+          <span class="feature-pill feature-pill--pending">⧖ Paginación (simulación)</span>
         </div>
       </div>
 
@@ -242,7 +242,7 @@
         </p>
       </div>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+      <div class="grid-2col">
 
         <!-- Panel de entrada -->
         <div class="card">
@@ -390,7 +390,7 @@
       <!-- ── TAB: MODO MANUAL ── -->
       <div class="tab-panel tab-panel--active" id="tab-panel-prot-manual" role="tabpanel" aria-labelledby="tab-prot-manual">
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+        <div class="grid-2col">
 
           <!-- Selector -->
           <div class="card">
@@ -505,7 +505,7 @@
       <!-- ── TAB: MODO TABLA ── -->
       <div class="tab-panel" id="tab-panel-prot-table" role="tabpanel" aria-labelledby="tab-prot-table">
 
-        <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:1.5rem">
+        <div class="grid-2col-wide">
 
           <!-- Tabla GDT -->
           <div class="card">
@@ -545,7 +545,7 @@
           </div>
 
           <!-- Resolución desde tabla -->
-          <div style="display:flex;flex-direction:column;gap:1.5rem">
+          <div class="col-flex">
             <div class="card">
               <div class="card__header">
                 <div class="card__icon card__icon--cyan">🎯</div>
@@ -661,7 +661,7 @@
         </p>
       </div>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+      <div class="grid-2col">
 
         <!-- Entrada binaria -->
         <div class="card">
@@ -888,7 +888,7 @@
         </div>
         <div class="theory-section__body">
           <p>El procesador Intel 8086 implementó un modelo de memoria segmentada con un espacio de direccionamiento de <strong>20 bits (1 MiB)</strong>. Dado que los registros internos son de 16 bits, el cálculo de la dirección física requiere la siguiente operación:</p>
-          <p style="margin:1rem 0;padding:0.75rem 1rem;background:rgba(6,182,212,0.06);border-left:3px solid var(--color-cyan);border-radius:0.375rem;font-family:var(--font-mono)">Dirección física = Segmento × 10h + Offset</p>
+          <p class="theory-formula">Dirección física = Segmento × 10h + Offset</p>
           <p>El segmento se desplaza cuatro posiciones a la izquierda (multiplicación por 16) para obtener la dirección base del segmento. A continuación se suma el desplazamiento (offset) de 16 bits.</p>
           <p style="margin-top:1rem"><strong>Desbordamiento de 20 bits:</strong> Si la dirección aritmética supera los 20 bits (1048575 = FFFFFh), el procesador 8086 original aplica un wrap: los bits superiores se descartan y solo se conservan los 20 inferiores. Con la línea A20 habilitada en sistemas modernos, el bit 20 también se transmite.</p>
         </div>
@@ -907,7 +907,7 @@
             <li><strong>Bits 1–0 (RPL):</strong> Nivel de privilegio solicitado (0 = mayor, 3 = menor).</li>
           </ul>
           <p>El descriptor de 8 bytes contiene la base (32 bits), el límite (20 bits), los atributos y los indicadores de control. La dirección lineal se calcula como:</p>
-          <p style="margin:1rem 0;padding:0.75rem 1rem;background:rgba(6,182,212,0.06);border-left:3px solid var(--color-cyan);border-radius:0.375rem;font-family:var(--font-mono)">Dirección lineal = Base del segmento + Offset</p>
+          <p class="theory-formula">Dirección lineal = Base del segmento + Offset</p>
           <p>La dirección <strong>física</strong> requiere paginación para ser determinada. Si la paginación está deshabilitada, la dirección lineal coincide con la física.</p>
         </div>
       </div>
@@ -1095,14 +1095,22 @@
           <div class="card__icon card__icon--green">✅</div>
           <div><div class="card__title">Módulos implementados</div></div>
         </div>
-        <div style="font-size:var(--text-sm);color:var(--color-text-muted);line-height:2">
-          <div>✓ <strong>Modo Real</strong> — Fórmula Seg×16+Off, modelos 8086 y A20, visualización animada, paso a paso</div>
-          <div>✓ <strong>Modo Protegido</strong> — Selector (índice/TI/RPL), descriptores GDT/LDT, DS/CS/SS, dirección lineal</div>
-          <div>✓ <strong>Reversing de descriptores</strong> — Entrada de 64 bits, extracción de todos los campos, explicación pedagógica</div>
-          <div>✓ <strong>Laboratorio de ejercicios</strong> — 6 categorías, valores generados por el motor, verificación real</div>
-          <div>✓ <strong>Pruebas automatizadas</strong> — +30 casos de prueba, todos los casos mínimos especificados</div>
-          <div>✓ <strong>Teoría y Glosario</strong> — Acordeones de teoría, glosario interactivo</div>
-          <div>⧖ <strong>Paginación</strong> — Simulación didáctica básica implementada</div>
+        <div class="module-list">
+          <div class="module-list__item"><strong>Modo Real</strong> — Fórmula Seg×16+Off, modelos 8086 y A20, visualización animada, paso a paso</div>
+          <div class="module-list__item"><strong>Modo Protegido</strong> — Selector (índice/TI/RPL), descriptores GDT/LDT, DS/CS/SS, dirección lineal</div>
+          <div class="module-list__item"><strong>Reversing de descriptores</strong> — Entrada de 64 bits, extracción de todos los campos, explicación pedagógica</div>
+          <div class="module-list__item"><strong>Laboratorio de ejercicios</strong> — 6 categorías, valores generados por el motor, verificación real</div>
+          <div class="module-list__item"><strong>Pruebas automatizadas</strong> — +30 casos de prueba, todos los casos mínimos especificados</div>
+          <div class="module-list__item"><strong>Teoría y Glosario</strong> — Acordeones de teoría, glosario interactivo</div>
+          <div class="module-list__item" style="opacity:0.7"><strong>Paginación</strong> — Simulación didáctica básica implementada</div>
+        </div>
+
+        <!-- Tech stack badges -->
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:1.5rem">
+          <span class="tech-badge tech-badge--html">HTML5</span>
+          <span class="tech-badge tech-badge--css">CSS3</span>
+          <span class="tech-badge tech-badge--js">Vanilla JS</span>
+          <span class="tech-badge tech-badge--x86">x86 ISA</span>
         </div>
       </div>
 
@@ -1137,14 +1145,14 @@
 
       <div class="card mb-4">
         <div class="card__header">
-          <div class="card__icon card__icon--cyan">⚠</div>
+          <div class="card__icon" style="background:rgba(245,158,11,0.12);color:var(--color-warn)">⚠</div>
           <div><div class="card__title">Limitaciones conocidas</div></div>
         </div>
-        <div style="font-size:var(--text-sm);color:var(--color-text-muted);line-height:2">
-          <div>• El simulador de paginación es didáctico: las tablas de páginas son de ejemplo y no reproducen una configuración real del sistema operativo.</div>
-          <div>• Las comprobaciones de privilegio implementadas son las principales (CPL, RPL, DPL básico para carga de registros). No reproducen la totalidad de las reglas de acceso en llamadas a procedimientos con cambio de nivel.</div>
-          <div>• El modelo de 32 bits no cubre el modo de 64 bits (IA-32e/long mode), donde la segmentación tiene un rol reducido.</div>
-          <div>• No se simula TLB, caché ni ciclos de bus reales.</div>
+        <div class="module-list" style="--mod-color: rgba(245,158,11,0.12); --mod-border: rgba(245,158,11,0.15)">
+          <div class="module-list__item" style="background:rgba(245,158,11,0.05);border-color:rgba(245,158,11,0.12)">El simulador de paginación es didáctico: las tablas de páginas son de ejemplo y no reproducen una configuración real del sistema operativo.</div>
+          <div class="module-list__item" style="background:rgba(245,158,11,0.05);border-color:rgba(245,158,11,0.12)">Las comprobaciones de privilegio implementadas son las principales (CPL, RPL, DPL básico). No reproducen la totalidad de las reglas de acceso en llamadas con cambio de nivel.</div>
+          <div class="module-list__item" style="background:rgba(245,158,11,0.05);border-color:rgba(245,158,11,0.12)">El modelo de 32 bits no cubre el modo de 64 bits (IA-32e/long mode), donde la segmentación tiene un rol reducido.</div>
+          <div class="module-list__item" style="background:rgba(245,158,11,0.05);border-color:rgba(245,158,11,0.12)">No se simula TLB, caché ni ciclos de bus reales.</div>
         </div>
       </div>
 
