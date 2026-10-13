@@ -235,9 +235,9 @@ overlay.addEventListener('click', closeSidebar);
     ctx.fillText(liveAddr.toString(16).toUpperCase().padStart(5, '0') + 'h', mmuX + mmuW - 55, mmuY + 17);
 
     tick++;
-    if (!prefersReducedMotion) {
+    try {
       requestAnimationFrame(draw);
-    }
+    } catch (_) {}
   }
 
   function roundRect(ctx, x, y, w, h, r) {
@@ -294,21 +294,34 @@ function hideMsg(el) { el.classList.remove('status-msg--visible'); }
 
 function setFieldError(inputEl, errEl, msg) {
   if (msg) {
-    inputEl.classList.add('form-input--error');
-    inputEl.classList.remove('form-input--success');
-    errEl.textContent = msg;
-    errEl.classList.add('form-error--visible');
+    if (inputEl?.classList) {
+      inputEl.classList.add('form-input--error');
+      inputEl.classList.remove('form-input--success');
+    }
+    if (errEl) {
+      errEl.textContent = msg;
+      errEl.classList?.add('form-error--visible');
+    }
   } else {
-    inputEl.classList.remove('form-input--error');
-    inputEl.classList.add('form-input--success');
-    errEl.textContent = '';
-    errEl.classList.remove('form-error--visible');
+    if (inputEl?.classList) {
+      inputEl.classList.remove('form-input--error');
+      inputEl.classList.add('form-input--success');
+    }
+    if (errEl) {
+      errEl.textContent = '';
+      errEl.classList?.remove('form-error--visible');
+    }
   }
 }
 
 function clearField(inputEl, errEl) {
-  inputEl.classList.remove('form-input--error','form-input--success');
-  if (errEl) { errEl.textContent = ''; errEl.classList.remove('form-error--visible'); }
+  if (inputEl?.classList) {
+    inputEl.classList.remove('form-input--error','form-input--success');
+  }
+  if (errEl) {
+    errEl.textContent = '';
+    errEl.classList?.remove('form-error--visible');
+  }
 }
 
 function parseInput(inputEl, errEl, format) {

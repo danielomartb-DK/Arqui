@@ -2088,8 +2088,17 @@ a:hover {
     margin-left: 0;
   }
   .menu-toggle { display: flex; }
-  .hero { flex-direction: column; padding: var(--sp-6); }
-  .hero__visual { display: none; }
+  .hero { flex-direction: column; padding: var(--sp-6); gap: var(--sp-6); }
+  .hero__visual {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: var(--sp-4);
+  }
+  .hero__visual canvas {
+    max-width: 100%;
+    height: auto;
+  }
   .hero__title { font-size: var(--text-3xl); }
   .form-row, .form-row--3 { grid-template-columns: 1fr; }
   .result-row { grid-template-columns: 1fr; }
